@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Paper,
@@ -20,12 +20,27 @@ import {
 } from '@mui/material';
 
 function App() {
+  const [country, setCountry] = useState('');
+  const [province, setProvince] = useState('');
+
+  const provincesByCountry = {
+    es: ['Madrid', 'Barcelona', 'Sevilla'],
+    mx: ['Ciudad de México', 'Jalisco', 'Nuevo León'],
+    ar: ['Buenos Aires', 'Córdoba', 'Santa Fe'],
+  };
+
+  const handleCountryChange = (event) => {
+    const value = event.target.value;
+    setCountry(value);
+    setProvince('');
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const values = Object.fromEntries(data.entries());
     localStorage.setItem('formData', JSON.stringify(values));
-    console.log('Datos guardados en Local Storage', values);
+    console.log(values);
   };
 
   return (
@@ -55,11 +70,35 @@ function App() {
       </FormControl>
 
       <FormControl fullWidth margin="normal">
-        <InputLabel id="select-label">País</InputLabel>
-        <Select labelId="select-label" label="País" name="country" defaultValue="">
+        <InputLabel id="select-country-label">País</InputLabel>
+        <Select
+          labelId="select-country-label"
+          label="País"
+          name="country"
+          value={country}
+          onChange={handleCountryChange}
+        >
           <MenuItem value="es">España</MenuItem>
           <MenuItem value="mx">México</MenuItem>
           <MenuItem value="ar">Argentina</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl fullWidth margin="normal" disabled={!country}>
+        <InputLabel id="select-province-label">Provincia</InputLabel>
+        <Select
+          labelId="select-province-label"
+          label="Provincia"
+          name="province"
+          value={province}
+          onChange={(e) => setProvince(e.target.value)}
+        >
+          {country &&
+            provincesByCountry[country].map((p) => (
+              <MenuItem key={p} value={p}>
+                {p}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
 

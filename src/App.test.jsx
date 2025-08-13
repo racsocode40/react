@@ -18,6 +18,7 @@ describe('App form', () => {
     expect(screen.getByLabelText(/masculino/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/femenino/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/país/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/provincia/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/activado/i)).toBeInTheDocument();
     expect(screen.getByRole('slider')).toBeInTheDocument();
     expect(screen.getByText(/subir archivo/i)).toBeInTheDocument();
@@ -41,6 +42,7 @@ describe('App form', () => {
     fireEvent.click(screen.getByLabelText(/acepto/i));
     fireEvent.click(screen.getByLabelText(/femenino/i));
     fireEvent.change(screen.getByLabelText(/país/i), { target: { value: 'es' } });
+    fireEvent.change(screen.getByLabelText(/provincia/i), { target: { value: 'Madrid' } });
     fireEvent.click(screen.getByRole('button', { name: /enviar/i }));
     expect(logSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -49,6 +51,7 @@ describe('App form', () => {
         checkbox: 'on',
         gender: 'female',
         country: 'es',
+        province: 'Madrid',
       })
     );
     logSpy.mockRestore();
