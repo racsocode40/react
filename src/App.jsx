@@ -1,5 +1,8 @@
 import React from 'react';
 import {
+  Container,
+  Paper,
+  Typography,
   Box,
   TextField,
   Checkbox,
@@ -20,11 +23,18 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(Object.fromEntries(data.entries()));
+    const values = Object.fromEntries(data.entries());
+    localStorage.setItem('formData', JSON.stringify(values));
+    console.log('Datos guardados en Local Storage', values);
   };
 
   return (
-    <Box component="form" sx={{ m: 2 }} onSubmit={handleSubmit}>
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h5" component="h1" gutterBottom>
+          Formulario
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit}>
       <TextField label="Texto" name="text" fullWidth margin="normal" />
       <TextField label="Contraseña" type="password" name="password" fullWidth margin="normal" />
       <TextField label="Email" type="email" name="email" fullWidth margin="normal" />
@@ -67,7 +77,9 @@ function App() {
       <Button type="submit" variant="contained" sx={{ mt: 2 }}>
         Enviar
       </Button>
-    </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 }
 
