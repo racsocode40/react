@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
 import { vi } from 'vitest';
@@ -48,8 +48,14 @@ describe('App form', () => {
     fireEvent.change(screen.getByLabelText(/teléfono/i), { target: { value: '1234567890' } });
     fireEvent.click(screen.getByLabelText(/acepto/i));
     fireEvent.click(screen.getByLabelText(/femenino/i));
-    fireEvent.change(screen.getByLabelText(/país/i), { target: { value: 'es' } });
-    fireEvent.change(screen.getByLabelText(/provincia/i), { target: { value: 'Madrid' } });
+
+    fireEvent.mouseDown(screen.getByLabelText(/país/i));
+    let listbox = within(screen.getByRole('listbox'));
+    fireEvent.click(listbox.getByText(/España/i));
+
+    fireEvent.mouseDown(screen.getByLabelText(/provincia/i));
+    listbox = within(screen.getByRole('listbox'));
+    fireEvent.click(listbox.getByText(/Madrid/i));
     fireEvent.click(screen.getByRole('button', { name: /enviar/i }));
     expect(logSpy).toHaveBeenCalledWith(
       expect.objectContaining({
