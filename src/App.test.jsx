@@ -29,6 +29,10 @@ describe('App form', () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     render(<App />);
     fireEvent.change(screen.getByLabelText(/texto/i), { target: { value: 'hola' } });
+    fireEvent.change(screen.getByLabelText(/contraseña/i), { target: { value: 'secreto1' } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'a@b.com' } });
+    fireEvent.change(screen.getByLabelText(/número/i), { target: { value: '5' } });
+    fireEvent.change(screen.getByLabelText(/teléfono/i), { target: { value: '1234567890' } });
     fireEvent.submit(screen.getByRole('button', { name: /enviar/i }).closest('form'));
     expect(logSpy).toHaveBeenCalledWith(expect.objectContaining({ text: 'hola' }));
     logSpy.mockRestore();
@@ -38,7 +42,10 @@ describe('App form', () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     render(<App />);
     fireEvent.change(screen.getByLabelText(/texto/i), { target: { value: 'abc' } });
+    fireEvent.change(screen.getByLabelText(/contraseña/i), { target: { value: 'secreto1' } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'a@b.com' } });
+    fireEvent.change(screen.getByLabelText(/número/i), { target: { value: '7' } });
+    fireEvent.change(screen.getByLabelText(/teléfono/i), { target: { value: '1234567890' } });
     fireEvent.click(screen.getByLabelText(/acepto/i));
     fireEvent.click(screen.getByLabelText(/femenino/i));
     fireEvent.change(screen.getByLabelText(/país/i), { target: { value: 'es' } });
