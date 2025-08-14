@@ -16,12 +16,22 @@ import {
   InputLabel,
   Switch,
   Slider,
-  Button
+  Button,
+  Alert
 } from '@mui/material';
 
 function App() {
   const [country, setCountry] = useState('');
   const [province, setProvince] = useState('');
+  const [values, setValues] = useState({
+    text: '',
+    password: '',
+    email: '',
+    number: '',
+    tel: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(false);
 
   const provincesByCountry = {
     es: ['Madrid', 'Barcelona', 'Sevilla'],
@@ -35,12 +45,46 @@ function App() {
     setProvince('');
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!values.text) newErrors.text = 'Texto es requerido';
+    else if (values.text.length < 3) newErrors.text = 'Mínimo 3 caracteres';
+
+    if (!values.password) newErrors.password = 'Contraseña requerida';
+    else if (values.password.length < 6) newErrors.password = 'Mínimo 6 caracteres';
+
+    if (!values.email) newErrors.email = 'Email requerido';
+    else if (!/\S+@\S+\.\S+/.test(values.email)) newErrors.email = 'Email inválido';
+
+    if (!values.number) newErrors.number = 'Número requerido';
+    else if (isNaN(Number(values.number))) newErrors.number = 'Debe ser numérico';
+
+    if (!values.tel) newErrors.tel = 'Teléfono requerido';
+    else if (!/^\d{10}$/.test(values.tel)) newErrors.tel = '10 dígitos';
+
+    return newErrors;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
+      setSuccess(false);
+      return;
+    }
+    setErrors({});
+    setSuccess(true);
     const data = new FormData(event.currentTarget);
-    const values = Object.fromEntries(data.entries());
-    localStorage.setItem('formData', JSON.stringify(values));
-    console.log(values);
+    const formValues = Object.fromEntries(data.entries());
+    localStorage.setItem('formData', JSON.stringify(formValues));
+    console.log(formValues);
   };
 
   return (
@@ -50,14 +94,104 @@ function App() {
           Formulario
         </Typography>
         <Box component="form" onSubmit={handleSubmit}>
-      <TextField label="Texto" name="text" fullWidth margin="normal" />
-      <TextField label="Contraseña" type="password" name="password" fullWidth margin="normal" />
-      <TextField label="Email" type="email" name="email" fullWidth margin="normal" />
-      <TextField label="Número" type="number" name="number" fullWidth margin="normal" />
-      <TextField label="Teléfono" type="tel" name="tel" fullWidth margin="normal" />
-      <TextField label="Fecha" type="date" name="date" fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
-      <TextField label="Hora" type="time" name="time" fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
-      <TextField label="Color" type="color" name="color" fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
+          {success && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              ¡Formulario enviado con éxito!
+            </Alert>
+          )}
+          <Typography variant="caption" color="text.secondary">
+            Regla: mínimo 3 caracteres
+          </Typography>
+          <TextField
+            label="Texto"
+            name="text"
+            fullWidth
+            margin="normal"
+            value={values.text}
+            onChange={handleChange}
+            error={Boolean(errors.text)}
+            helperText={errors.text}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Regla: mínimo 6 caracteres
+          </Typography>
+          <TextField
+            label="Contraseña"
+            type="password"
+            name="password"
+            fullWidth
+            margin="normal"
+            value={values.password}
+            onChange={handleChange}
+            error={Boolean(errors.password)}
+            helperText={errors.password}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Regla: formato email válido
+          </Typography>
+          <TextField
+            label="Email"
+            type="email"
+            name="email"
+            fullWidth
+            margin="normal"
+            value={values.email}
+            onChange={handleChange}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Regla: debe ser numérico
+          </Typography>
+          <TextField
+            label="Número"
+            type="number"
+            name="number"
+            fullWidth
+            margin="normal"
+            value={values.number}
+            onChange={handleChange}
+            error={Boolean(errors.number)}
+            helperText={errors.number}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Regla: 10 dígitos
+          </Typography>
+          <TextField
+            label="Teléfono"
+            type="tel"
+            name="tel"
+            fullWidth
+            margin="normal"
+            value={values.tel}
+            onChange={handleChange}
+            error={Boolean(errors.tel)}
+            helperText={errors.tel}
+          />
+          <TextField
+            label="Fecha"
+            type="date"
+            name="date"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="Hora"
+            type="time"
+            name="time"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="Color"
+            type="color"
+            name="color"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+          />
 
       <FormControlLabel control={<Checkbox name="checkbox" />} label="Acepto" />
 
